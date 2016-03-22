@@ -125,5 +125,13 @@ function acegiak_atlink_validate_options( $input ) {
 }
 
 
-
+add_action('transition_comment_status', 'acegiak_atlink_approve_comment_callback', 10, 3);
+function acegiak_atlink_approve_comment_callback($new_status, $old_status, $comment) {
+    if($old_status != $new_status) {
+        if($new_status == 'approved') {
+            $postid = $comment->comment_post_ID;
+	    acegiak_atlink_webmention( $postid );
+        }
+    }
+}
 ?>
