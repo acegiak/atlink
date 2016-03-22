@@ -28,6 +28,10 @@ License: GPL2
 function acegiak_atlink_webmention( $postid ) {
 	$thecontent = get_post_field('post_content', $postid);
 	$check_hash = preg_match_all("/([#][a-zA-Z-0-9]+)/", $thecontent, $hashtweet);
+	if(!is_array($hashtweet[2])){
+		error_log("hashtweet2 isntarray: ".print_r($hashtweet[2],true));
+		return;
+	}
 	foreach ($hashtweet[2] as $ht){
 	  foreach (get_bookmarks() as $bookmark){
 			if(preg_match("`".$ht."`i",preg_replace("`\W`","",$bookmark->link_name))){
@@ -43,10 +47,10 @@ function acegiak_atlink_content( $content ) {
 		function ($matches) {
 			foreach (get_bookmarks() as $bookmark){
 				if(preg_match("`".$matches[2]."`i",preg_replace("`\W`","",$bookmark->link_name))){
-					return $matches[1].'<a class="h-card" href="'.$bookmark->link_url.'" alt="'.$bookmark->link_name.'">'.$bookmark->link_name.'</a>';
+					return $matches[1].'<a class="h-card u-category" href="'.$bookmark->link_url.'" alt="'.$bookmark->link_name.'">'.$bookmark->link_name.'</a>';
 				}
 			}
-return $matches[0];
+	return $matches[1].'<a class="h-card u-category" href="https://twitter.com/'.$matches[2].'" alt="@'.$matches[2].'">@'.$matches[2].'</a>';;
         },$content);
 	
 }
